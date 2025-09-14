@@ -13,7 +13,6 @@ import VerificationResult from './pages/VerificationResult';
 import AdminDashboard from './pages/AdminDashboard';
 import VerifierDashboard from './pages/VerifierDashboard';
 import FraudDetection from './pages/FraudDetection';
-import AboutUs from './pages/AboutUs';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 
@@ -25,7 +24,6 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         
