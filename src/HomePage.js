@@ -6,6 +6,7 @@
      import ShieldIcon from '@mui/icons-material/Shield';
      import SignInModal from './SignInModal'; // Create this component next
      import SignUpModal from './SignUpModal'; // Create this component next
+     import { useNavigate } from 'react-router-dom'; // <-- Add this import
 
      const Header = styled(Box)(({ theme }) => ({
        display: 'flex',
@@ -47,12 +48,13 @@
      function HomePage() {
        const [signInOpen, setSignInOpen] = useState(false);
        const [signUpOpen, setSignUpOpen] = useState(false);
+       const navigate = useNavigate(); // <-- Add this line
 
        const handleSignInOpen = () => setSignInOpen(true);
        const handleSignInClose = () => setSignInOpen(false);
        const handleSignUpOpen = () => setSignUpOpen(true);
        const handleSignUpClose = () => setSignUpOpen(false);
-
+       const handleGetStarted = () => navigate('/register'); // <-- Update this function
        return (
          <Box>
            {/* Header/Navbar */}
@@ -75,7 +77,7 @@
                Manage your digital identity and verify your documents with TrustNet's cutting-edge blockchain technology.
              </Typography>
              <Box>
-               <Button variant="contained" size="large" sx={{ mr: 2 }}>Get Started</Button>
+               <Button variant="contained" size="large" sx={{ mr: 2 }} onClick={handleGetStarted}>Get Started</Button>
                <Button variant="outlined" size="large" onClick={handleSignInOpen}>Sign In</Button>
              </Box>
            </HeroSection>
@@ -121,7 +123,7 @@
              <Typography variant="h4" sx={{ mb: 3 }}>
                Ready to secure your digital identity?
              </Typography>
-             <Button variant="contained" size="large" sx={{ backgroundColor: '#fff', color: 'primary.main' }}>
+             <Button variant="contained" size="large" sx={{ backgroundColor: '#ffffffff', color: 'primary.main' }} onClick={handleGetStarted}>
                Start Your Verification
              </Button>
            </CallToActionSection>
