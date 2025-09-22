@@ -27,6 +27,7 @@ const StyledModalContent = styled(Box)(({ theme }) => ({
 
 function SignUpModal({ open, onClose, onSignInClick }) {
   const [formData, setFormData] = useState({
+    fullName: '', // Added Full Name field
     email: '',
     password: '',
     confirmPassword: '',
@@ -101,6 +102,17 @@ function SignUpModal({ open, onClose, onSignInClick }) {
         <Typography id="sign-up-modal-description" variant="body2" color="text.secondary" textAlign="center" sx={{ mb: 2 }}>
           Join TrustNet to start verifying your identity
         </Typography>
+        
+        {/* New Full Name TextField */}
+        <TextField
+            fullWidth
+            label="Full Name"
+            margin="normal"
+            variant="outlined"
+            value={formData.fullName}
+            onChange={handleInputChange('fullName')}
+            required
+          />
 
         <TextField
           label="Email"

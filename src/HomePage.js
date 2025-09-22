@@ -60,7 +60,7 @@
            {/* Header/Navbar */}
            <Header>
              <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-               TrustNet
+               AegisID
              </Typography>
              <Box>
                <Button onClick={handleSignInOpen} sx={{ marginRight: 2 }}>Sign In</Button>
@@ -74,18 +74,18 @@
                Secure Digital <span style={{ color: '#1A73E8' }}>Identity</span>
              </Typography>
              <Typography variant="h5" sx={{ mb: 4, color: 'text.secondary' }}>
-               Manage your digital identity and verify your documents with TrustNet's cutting-edge blockchain technology.
+               Manage your digital identity and verify your documents with AegisID's cutting-edge blockchain technology.
              </Typography>
              <Box>
-               <Button variant="contained" size="large" sx={{ mr: 2 }} onClick={handleGetStarted}>Get Started</Button>
+               <Button variant="contained" size="large" sx={{ mr: 2 }} onClick={handleSignUpOpen}>Get Started</Button>
                <Button variant="outlined" size="large" onClick={handleSignInOpen}>Sign In</Button>
              </Box>
            </HeroSection>
 
-           {/* Why Choose TrustNet Section */}
+           {/* Why Choose AegisID Section */}
            <Container sx={{ py: 8 }}>
              <Typography variant="h4" textAlign="center" sx={{ mb: 6 }}>
-               Why Choose TrustNet?
+               Why Choose AegisID?
              </Typography>
              <Grid container spacing={4}>
                <Grid item xs={12} md={4}>
@@ -130,9 +130,9 @@
 
            {/* Footer */}
            <Footer>
-             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>TrustNet</Typography>
+             <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>AegisID</Typography>
              <Typography variant="body2" sx={{ mb: 1 }}>Secure digital identity verification platform</Typography>
-             <Typography variant="body2">© {new Date().getFullYear()} TrustNet. All rights reserved.</Typography>
+             <Typography variant="body2">© {new Date().getFullYear()} AegisID. All rights reserved.</Typography>
            </Footer>
 
            {/* Modals */}

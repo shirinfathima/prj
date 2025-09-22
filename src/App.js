@@ -5,7 +5,7 @@ import theme from './theme';
 
 // Import all pages
 import HomePage from './HomePage';
-import SignIn from './pages/SignIn';
+
 import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import DocumentUpload from './pages/DocumentUpload';
@@ -22,7 +22,7 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
-        <Route path="/sign-in" element={<SignIn />} />
+      
         <Route path="/register" element={<Register />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />

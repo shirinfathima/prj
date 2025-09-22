@@ -1,3 +1,4 @@
+// src/pages/AdminDashboard.js
 import React, { useState } from 'react';
 import {
   Box,
@@ -29,7 +30,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemAvatar,
   Divider,
   Alert,
   Tabs,
@@ -42,15 +42,14 @@ import {
   Assignment as TaskIcon,
   Assessment as ReportsIcon,
   Search as SearchIcon,
-  FilterList as FilterIcon,
   Download as DownloadIcon,
   Visibility as ViewIcon,
   Edit as EditIcon,
   Block as BlockIcon,
   CheckCircle as ApproveIcon,
   Cancel as RejectIcon,
-  MoreVert as MoreIcon
 } from '@mui/icons-material';
+import DashboardLayout from '../components/DashboardLayout';
 
 function AdminDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
@@ -198,11 +197,6 @@ function AdminDashboard() {
     a.click();
   };
 
-  const handleAssignVerification = (verificationId, verifierId) => {
-    // Mock assign functionality
-    console.log(`Assigning verification ${verificationId} to ${verifierId}`);
-  };
-
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -230,8 +224,52 @@ function AdminDashboard() {
     </Card>
   );
 
+  const adminSidebar = (
+    <Box>
+      <Card sx={{ mb: 3 }}>
+        <CardContent sx={{ textAlign: 'center' }}>
+          <Avatar
+            sx={{ width: 80, height: 80, mx: 'auto', mb: 2, bgcolor: 'primary.main' }}
+          >
+            <AdminIcon sx={{ fontSize: 40 }} />
+          </Avatar>
+          <Typography variant="h6">Administrator</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            admin@trustnet.com
+          </Typography>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <Typography variant="h6" sx={{ mb: 2 }}>System Overview</Typography>
+          <StatCard
+            title="Total Users"
+            value={systemStats.totalUsers}
+            icon={<UsersIcon />}
+            color="primary"
+          />
+          <Box sx={{ my: 2 }}>
+            <StatCard
+              title="Active Users"
+              value={systemStats.activeUsers}
+              icon={<UsersIcon />}
+              color="success"
+            />
+          </Box>
+          <StatCard
+            title="Pending Verifications"
+            value={systemStats.pendingVerifications}
+            icon={<TaskIcon />}
+            color="warning"
+          />
+        </CardContent>
+      </Card>
+    </Box>
+  );
+
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <DashboardLayout sidebar={adminSidebar}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -241,42 +279,6 @@ function AdminDashboard() {
           Manage users, monitor verifications, and generate reports
         </Typography>
       </Box>
-
-      {/* Statistics Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Total Users"
-            value={systemStats.totalUsers}
-            icon={<UsersIcon />}
-            color="primary"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Active Users"
-            value={systemStats.activeUsers}
-            icon={<UsersIcon />}
-            color="success"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Pending Verifications"
-            value={systemStats.pendingVerifications}
-            icon={<TaskIcon />}
-            color="warning"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Completed Today"
-            value={systemStats.completedToday}
-            icon={<ReportsIcon />}
-            color="info"
-          />
-        </Grid>
-      </Grid>
 
       {/* Main Content Tabs */}
       <Card>
@@ -552,7 +554,7 @@ function AdminDashboard() {
           <Button variant="contained">Edit User</Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </DashboardLayout>
   );
 }
 
