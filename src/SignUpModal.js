@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import {
   Modal, Box, Typography, TextField, Button, Divider, Link,
-  FormControl, InputLabel, Select, MenuItem
+  FormControl, InputLabel, Select, MenuItem, Alert
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { register } from './services/authService'; // <-- Add this import
+import { useNavigate } from 'react-router-dom'; // <-- Add this import
 
 const StyledModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -26,13 +28,14 @@ const StyledModalContent = styled(Box)(({ theme }) => ({
 
 function SignUpModal({ open, onClose, onSignInClick }) {
   const [formData, setFormData] = useState({
-    fullName: '', // Added Full Name field
+    fullName: '',
     email: '',
     password: '',
     confirmPassword: '',
     role: 'user',
-    document: null
   });
+  const [submissionMessage, setSubmissionMessage] = useState('');
+  const navigate = useNavigate(); // <-- Add this line
 
   const handleSignInRedirect = () => {
     onClose();
@@ -46,17 +49,22 @@ function SignUpModal({ open, onClose, onSignInClick }) {
     });
   };
 
-  const handleSubmit = () => {
-    // Basic validation
+  const handleSubmit = async () => {
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      setSubmissionMessage('Passwords do not match!');
       return;
     }
 
-    console.log('Registration data:', formData);
-    // Here you would typically send this data to your backend
-    alert('Registration submitted!');
-    onClose();
+    try {
+      const responseMessage = await register(formData.fullName, formData.email, formData.password, formData.role);
+      setSubmissionMessage(responseMessage);
+      if (responseMessage === 'User registered successfully') {
+        onClose();
+        navigate('/user');
+      }
+    } catch (error) {
+      setSubmissionMessage('Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -73,8 +81,13 @@ function SignUpModal({ open, onClose, onSignInClick }) {
         <Typography id="sign-up-modal-description" variant="body2" color="text.secondary" textAlign="center" sx={{ mb: 2 }}>
           Join TrustNet to start verifying your identity
         </Typography>
-        
-        {/* New Full Name TextField */}
+
+        {submissionMessage && (
+          <Alert severity={submissionMessage === 'User registered successfully' ? "success" : "error"}>
+            {submissionMessage}
+          </Alert>
+        )}
+
         <TextField
             fullWidth
             label="Full Name"
@@ -95,7 +108,7 @@ function SignUpModal({ open, onClose, onSignInClick }) {
           onChange={handleInputChange('email')}
           required
         />
-        
+
         <TextField
           label="Password"
           type="password"
@@ -106,7 +119,7 @@ function SignUpModal({ open, onClose, onSignInClick }) {
           onChange={handleInputChange('password')}
           required
         />
-        
+
         <TextField
           label="Confirm Password"
           type="password"
@@ -131,9 +144,9 @@ function SignUpModal({ open, onClose, onSignInClick }) {
           </Select>
         </FormControl>
 
-        <Button 
-          variant="contained" 
-          fullWidth 
+        <Button
+          variant="contained"
+          fullWidth
           sx={{ mt: 3, py: 1.5 }}
           onClick={handleSubmit}
         >
@@ -148,12 +161,6 @@ function SignUpModal({ open, onClose, onSignInClick }) {
         >
           Already have an account? Sign in
         </Link>
-
-        <Divider sx={{ my: 2 }}>or</Divider>
-
-        <Button variant="contained" fullWidth sx={{ py: 1.5, backgroundColor: '#1A73E8' }}>
-          Sign up with Google
-        </Button>
       </StyledModalContent>
     </Modal>
   );

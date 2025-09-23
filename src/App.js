@@ -5,8 +5,6 @@ import theme from './theme';
 
 // Import all pages
 import HomePage from './HomePage';
-
-import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import DocumentUpload from './pages/DocumentUpload';
 import VerificationResult from './pages/VerificationResult';
@@ -23,8 +21,6 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
-      
-        <Route path="/register" element={<Register />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         

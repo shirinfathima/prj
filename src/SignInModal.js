@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Modal, Box, Typography, TextField, Button, Link
+  Modal, Box, Typography, TextField, Button, Link, Alert
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { login } from './services/authService'; // <-- Add this import
+import { useNavigate } from 'react-router-dom'; // <-- Add this import
 
 const StyledModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -21,9 +23,28 @@ const StyledModalContent = styled(Box)(({ theme }) => ({
 }));
 
 function SignInModal({ open, onClose, onSignUpClick }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [submissionMessage, setSubmissionMessage] = useState('');
+  const navigate = useNavigate(); // <-- Add this line
+
   const handleSignUpRedirect = () => {
     onClose();
     onSignUpClick();
+  };
+
+  const handleLogin = async () => {
+    try {
+      const responseMessage = await login(email, password);
+      setSubmissionMessage(responseMessage);
+      if (responseMessage.includes("successful")) {
+        onClose();
+        // Redirect to a dashboard based on role
+        navigate('/user');
+      }
+    } catch (error) {
+      setSubmissionMessage('Login failed. Invalid credentials.');
+    }
   };
 
   return (
@@ -41,12 +62,20 @@ function SignInModal({ open, onClose, onSignUpClick }) {
           Sign in to access your digital identity dashboard
         </Typography>
 
+        {submissionMessage && (
+          <Alert severity={submissionMessage.includes("successful") ? "success" : "error"}>
+            {submissionMessage}
+          </Alert>
+        )}
+
         <TextField
           label="Email"
           variant="outlined"
           fullWidth
           margin="normal"
           autoFocus
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
           label="Password"
@@ -54,9 +83,11 @@ function SignInModal({ open, onClose, onSignUpClick }) {
           variant="outlined"
           fullWidth
           margin="normal"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
-        <Button variant="contained" fullWidth sx={{ mt: 2, py: 1.5 }}>
+        <Button variant="contained" fullWidth sx={{ mt: 2, py: 1.5 }} onClick={handleLogin}>
           Sign In
         </Button>
 
