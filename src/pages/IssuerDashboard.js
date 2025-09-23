@@ -1,4 +1,4 @@
-// src/pages/AdminDashboard.js
+// src/pages/IssuerDashboard.js
 import React, { useState } from 'react';
 import {
   Box,
@@ -37,7 +37,7 @@ import {
   IconButton
 } from '@mui/material';
 import {
-  AdminPanelSettings as AdminIcon,
+  AdminPanelSettings as IssuerIcon,
   People as UsersIcon,
   Assignment as TaskIcon,
   Assessment as ReportsIcon,
@@ -51,7 +51,7 @@ import {
 } from '@mui/icons-material';
 import DashboardLayout from '../components/DashboardLayout';
 
-function AdminDashboard() {
+function IssuerDashboard() {
   const [currentTab, setCurrentTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -185,10 +185,10 @@ function AdminDashboard() {
 
   const handleExportUsers = () => {
     // Mock export functionality
-    const csvData = users.map(user => 
+    const csvData = users.map(user =>
       `${user.name},${user.email},${user.role},${user.status},${user.joinDate}`
     ).join('\n');
-    
+
     const blob = new Blob([`Name,Email,Role,Status,Join Date\n${csvData}`], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -199,7 +199,7 @@ function AdminDashboard() {
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
+                          user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || user.status.toLowerCase() === statusFilter.toLowerCase();
     return matchesSearch && matchesStatus;
   });
@@ -224,18 +224,18 @@ function AdminDashboard() {
     </Card>
   );
 
-  const adminSidebar = (
+  const issuerSidebar = (
     <Box>
       <Card sx={{ mb: 3 }}>
         <CardContent sx={{ textAlign: 'center' }}>
           <Avatar
             sx={{ width: 80, height: 80, mx: 'auto', mb: 2, bgcolor: 'primary.main' }}
           >
-            <AdminIcon sx={{ fontSize: 40 }} />
+            <IssuerIcon sx={{ fontSize: 40 }} />
           </Avatar>
-          <Typography variant="h6">Administrator</Typography>
+          <Typography variant="h6">Issuer</Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            admin@trustnet.com
+            issuer@trustnet.com
           </Typography>
         </CardContent>
       </Card>
@@ -269,11 +269,11 @@ function AdminDashboard() {
   );
 
   return (
-    <DashboardLayout sidebar={adminSidebar}>
+    <DashboardLayout sidebar={issuerSidebar}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <AdminIcon /> Admin Dashboard
+          <IssuerIcon /> Issuer Dashboard
         </Typography>
         <Typography variant="body1" color="text.secondary">
           Manage users, monitor verifications, and generate reports
@@ -361,24 +361,24 @@ function AdminDashboard() {
                         <Chip label={user.role} variant="outlined" size="small" />
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label={user.status} 
-                          color={getStatusColor(user.status)} 
+                        <Chip
+                          label={user.status}
+                          color={getStatusColor(user.status)}
                           size="small"
                         />
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label={user.verificationStatus} 
-                          color={getStatusColor(user.verificationStatus)} 
+                        <Chip
+                          label={user.verificationStatus}
+                          color={getStatusColor(user.verificationStatus)}
                           size="small"
                         />
                       </TableCell>
                       <TableCell>{user.documentsCount}</TableCell>
                       <TableCell>{new Date(user.joinDate).toLocaleDateString()}</TableCell>
                       <TableCell>
-                        <IconButton 
-                          size="small" 
+                        <IconButton
+                          size="small"
                           onClick={() => handleUserClick(user)}
                         >
                           <ViewIcon />
@@ -432,16 +432,16 @@ function AdminDashboard() {
                         {new Date(verification.submittedDate).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label={verification.status} 
-                          color={getStatusColor(verification.status)} 
+                        <Chip
+                          label={verification.status}
+                          color={getStatusColor(verification.status)}
                           size="small"
                         />
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label={verification.priority} 
-                          color={getPriorityColor(verification.priority)} 
+                        <Chip
+                          label={verification.priority}
+                          color={getPriorityColor(verification.priority)}
                           size="small"
                         />
                       </TableCell>
@@ -469,7 +469,7 @@ function AdminDashboard() {
         {currentTab === 2 && (
           <CardContent>
             <Typography variant="h6" sx={{ mb: 3 }}>System Performance</Typography>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Alert severity="info" sx={{ mb: 2 }}>
@@ -558,4 +558,4 @@ function AdminDashboard() {
   );
 }
 
-export default AdminDashboard;
+export default IssuerDashboard;

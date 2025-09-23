@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Modal, Box, Typography, TextField, Button, Divider, Link
+  Modal, Box, Typography, TextField, Button, Link
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -68,12 +68,6 @@ function SignInModal({ open, onClose, onSignUpClick }) {
         >
           Don’t have an account? Sign up
         </Link>
-
-        <Divider sx={{ my: 2 }}>or</Divider>
-
-        <Button variant="contained" fullWidth sx={{ py: 1.5, backgroundColor: '#1A73E8' }}>
-          Sign in anonymously
-        </Button>
       </StyledModalContent>
     </Modal>
   );

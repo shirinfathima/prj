@@ -10,11 +10,12 @@ import Register from './pages/Register';
 import UserDashboard from './pages/UserDashboard';
 import DocumentUpload from './pages/DocumentUpload';
 import VerificationResult from './pages/VerificationResult';
-import AdminDashboard from './pages/AdminDashboard';
+import IssuerDashboard from './pages/IssuerDashboard';
 import VerifierDashboard from './pages/VerifierDashboard';
 import FraudDetection from './pages/FraudDetection';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import ProfileDetails from './pages/ProfileDetails';
 
 function App() {
   return (
@@ -28,13 +29,14 @@ function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         
         {/* User Routes */}
-        <Route path="/dashboard" element={<UserDashboard />} />
+        <Route path="/user" element={<UserDashboard />} />
+        <Route path="/profile-details" element={<ProfileDetails />} /> 
         <Route path="/upload" element={<DocumentUpload />} />
         <Route path="/verification-result" element={<VerificationResult />} />
         
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        {/* issuer Routes */}
+        <Route path="/issuer" element={<IssuerDashboard />} />
+        <Route path="/issuer/dashboard" element={<IssuerDashboard />} />
         
         {/* Verifier Routes */}
         <Route path="/verifier" element={<VerifierDashboard />} />

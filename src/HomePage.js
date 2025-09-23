@@ -123,7 +123,7 @@
              <Typography variant="h4" sx={{ mb: 3 }}>
                Ready to secure your digital identity?
              </Typography>
-             <Button variant="contained" size="large" sx={{ backgroundColor: '#ffffffff', color: 'primary.main' }} onClick={handleGetStarted}>
+             <Button variant="contained" size="large" sx={{ backgroundColor: '#ffffffff', color: 'primary.main' }} onClick={handleSignUpOpen}>
                Start Your Verification
              </Button>
            </CallToActionSection>

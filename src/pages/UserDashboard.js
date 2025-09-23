@@ -18,8 +18,7 @@ import {
   Alert
 } from '@mui/material';
 import {
-  Dashboard as DashboardIcon,
-  Person as PersonIcon,
+  Person as PersonIcon, // Changed DashboardIcon to PersonIcon for a user-centric view
   Description as DocumentIcon,
   CloudUpload as UploadIcon,
   CheckCircle as CheckIcon,
@@ -105,10 +104,10 @@ function UserDashboard() {
             <Button
               variant="outlined"
               startIcon={<EditIcon />}
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate('/profile-details')}
               fullWidth
             >
-              Edit Profile
+              Profile Details
             </Button>
           </Box>
         </CardContent>
@@ -141,7 +140,7 @@ function UserDashboard() {
     <DashboardLayout sidebar={userSidebar}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <DashboardIcon /> Welcome back, {user.name}
+          <PersonIcon /> Welcome back, {user.name}
         </Typography>
         <Typography variant="body1" color="text.secondary">
           Manage your documents and track verification status

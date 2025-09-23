@@ -2,10 +2,9 @@
 import React, { useState } from 'react';
 import {
   Modal, Box, Typography, TextField, Button, Divider, Link,
-  FormControl, InputLabel, Select, MenuItem, Input
+  FormControl, InputLabel, Select, MenuItem
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const StyledModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -47,38 +46,10 @@ function SignUpModal({ open, onClose, onSignInClick }) {
     });
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
-      if (!allowedTypes.includes(file.type)) {
-        alert('Please select a valid file type (JPEG, PNG, PDF)');
-        return;
-      }
-      
-      // Validate file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        alert('File size must be less than 10MB');
-        return;
-      }
-
-      setFormData({
-        ...formData,
-        document: file
-      });
-    }
-  };
-
   const handleSubmit = () => {
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
-      return;
-    }
-
-    if (!formData.document && formData.role !== 'admin') {
-      alert('Please upload an identity document');
       return;
     }
 
@@ -156,44 +127,9 @@ function SignUpModal({ open, onClose, onSignInClick }) {
           >
             <MenuItem value="user">User</MenuItem>
             <MenuItem value="verifier">Verifier</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
+            <MenuItem value="issuer">Issuer</MenuItem>
           </Select>
         </FormControl>
-
-        {formData.role !== 'admin' && (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              Upload Identity Document (PDF/Image) *
-            </Typography>
-            <Input
-              type="file"
-              inputProps={{ 
-                accept: '.pdf,.jpg,.jpeg,.png',
-                onChange: handleFileUpload
-              }}
-              style={{ display: 'none' }}
-              id="document-upload"
-            />
-            <label htmlFor="document-upload">
-              <Button
-                variant="outlined"
-                component="span"
-                startIcon={<CloudUploadIcon />}
-                fullWidth
-              >
-                {formData.document ? formData.document.name : 'Choose File'}
-              </Button>
-            </label>
-            {formData.document && (
-              <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                Selected: {formData.document.name} ({(formData.document.size / 1024 / 1024).toFixed(2)} MB)
-              </Typography>
-            )}
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-              Supported formats: PDF, JPG, PNG (Max 10MB)
-            </Typography>
-          </Box>
-        )}
 
         <Button 
           variant="contained" 
