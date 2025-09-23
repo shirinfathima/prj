@@ -138,9 +138,9 @@ function SignUpModal({ open, onClose, onSignInClick }) {
             onChange={handleInputChange('role')}
             label="Role"
           >
-            <MenuItem value="user">User</MenuItem>
-            <MenuItem value="verifier">Verifier</MenuItem>
-            <MenuItem value="issuer">Issuer</MenuItem>
+            <MenuItem value="USER">User</MenuItem>
+            <MenuItem value="VERIFIER">Verifier</MenuItem>
+            <MenuItem value="ISSUER">Issuer</MenuItem>
           </Select>
         </FormControl>
 

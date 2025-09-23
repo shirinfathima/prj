@@ -1,10 +1,11 @@
+// SignInModal.js - REPLACE ENTIRE FILE
 import React, { useState } from 'react';
 import {
   Modal, Box, Typography, TextField, Button, Link, Alert
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { login } from './services/authService'; // <-- Add this import
-import { useNavigate } from 'react-router-dom'; // <-- Add this import
+import { login } from './services/authService';
+import { useNavigate } from 'react-router-dom';
 
 const StyledModalContent = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -26,7 +27,7 @@ function SignInModal({ open, onClose, onSignUpClick }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submissionMessage, setSubmissionMessage] = useState('');
-  const navigate = useNavigate(); // <-- Add this line
+  const navigate = useNavigate();
 
   const handleSignUpRedirect = () => {
     onClose();
@@ -37,10 +38,23 @@ function SignInModal({ open, onClose, onSignUpClick }) {
     try {
       const responseMessage = await login(email, password);
       setSubmissionMessage(responseMessage);
+      
       if (responseMessage.includes("successful")) {
         onClose();
-        // Redirect to a dashboard based on role
-        navigate('/user');
+        // Extract role and redirect accordingly
+        const role = responseMessage.replace("Login successful as ", "").toLowerCase();
+        
+        switch(role) {
+          case 'issuer':
+            navigate('/issuer/dashboard');
+            break;
+          case 'verifier':
+            navigate('/verifier/dashboard');
+            break;
+          case 'user':
+          default:
+            navigate('/user');
+        }
       }
     } catch (error) {
       setSubmissionMessage('Login failed. Invalid credentials.');
@@ -97,7 +111,7 @@ function SignInModal({ open, onClose, onSignUpClick }) {
           onClick={handleSignUpRedirect}
           sx={{ mt: 1, textAlign: 'center', textDecoration: 'underline' }}
         >
-          Don’t have an account? Sign up
+          Don't have an account? Sign up
         </Link>
       </StyledModalContent>
     </Modal>
