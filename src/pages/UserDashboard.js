@@ -28,14 +28,14 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout'; // Import the new layout component
+import { getCurrentUser, logout } from '../services/authService'; 
 
 function UserDashboard() {
   const navigate = useNavigate();
-  const [user] = useState({
-    name: 'John Doe',
-    email: 'john.doe@email.com',
-    role: 'User',
-    avatar: '/static/images/avatar/1.jpg'
+  const [user, setUser] = useState(getCurrentUser() || { 
+   name: 'Guest', 
+   email: 'guest@app.com', 
+   role: 'User' 
   });
 
   const [documents] = useState([

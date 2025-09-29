@@ -19,5 +19,25 @@ export const login = async (email, password) => {
     },
     body: JSON.stringify({ email, password }),
   });
-  return response.text();
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || 'Login failed');
+  }
+  // Expect a JSON User object on success
+  const user = await response.json();
+  
+  // Store user data in local storage
+  localStorage.setItem('user', JSON.stringify(user));
+
+  // Return the full user object
+  return user
+};
+// New helper functions to retrieve stored data
+export const getCurrentUser = () => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+};
+
+export const logout = () => {
+    localStorage.removeItem('user');
 };

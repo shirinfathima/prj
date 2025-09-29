@@ -36,13 +36,13 @@ function SignInModal({ open, onClose, onSignUpClick }) {
 
   const handleLogin = async () => {
     try {
-      const responseMessage = await login(email, password);
-      setSubmissionMessage(responseMessage);
+      const user = await login(email, password);
+      setSubmissionMessage(`Login successful as ${user.role}`);
       
-      if (responseMessage.includes("successful")) {
+      if (user) {
         onClose();
-        // Extract role and redirect accordingly
-        const role = responseMessage.replace("Login successful as ", "").toLowerCase();
+        // Use the role from the returned user object
+        const role = user.role.toLowerCase(); 
         
         switch(role) {
           case 'issuer':
