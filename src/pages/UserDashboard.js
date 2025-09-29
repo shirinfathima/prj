@@ -1,5 +1,5 @@
 // src/pages/UserDashboard.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // <-- ADD useEffect
 import {
   Box,
   Typography,
@@ -18,7 +18,7 @@ import {
   Alert
 } from '@mui/material';
 import {
-  Person as PersonIcon, // Changed DashboardIcon to PersonIcon for a user-centric view
+  Person as PersonIcon,
   Description as DocumentIcon,
   CloudUpload as UploadIcon,
   CheckCircle as CheckIcon,
@@ -27,7 +27,7 @@ import {
   Edit as EditIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import DashboardLayout from '../components/DashboardLayout'; // Import the new layout component
+import DashboardLayout from '../components/DashboardLayout'; 
 import { getCurrentUser, logout } from '../services/authService'; 
 
 function UserDashboard() {
@@ -35,8 +35,39 @@ function UserDashboard() {
   const [user, setUser] = useState(getCurrentUser() || { 
    name: 'Guest', 
    email: 'guest@app.com', 
-   role: 'User' 
+   role: 'Guest' 
   });
+
+  // NEW: Role enforcement logic
+  useEffect(() => {
+    const currentUser = getCurrentUser();
+    if (!currentUser) {
+      // Not logged in, redirect to home/login page
+      navigate('/');
+      return;
+    }
+
+    const role = currentUser.role.toUpperCase();
+
+    if (role === 'VERIFIER') {
+      navigate('/verifier/dashboard');
+    } else if (role === 'ISSUER') {
+      navigate('/issuer/dashboard');
+    } else if (role !== 'USER') {
+      // Fallback for unknown role, redirect to home
+      navigate('/');
+    }
+    
+    // Only update state if the user is actually a USER (to prevent re-render issues from redirects)
+    if (role === 'USER') {
+      setUser(currentUser);
+    }
+  }, [navigate]);
+
+  if (user.role.toUpperCase() !== 'USER') {
+    // Prevent rendering the dashboard while redirecting
+    return <Box sx={{ p: 4 }}>Checking authorization...</Box>;
+  }
 
   const [documents] = useState([
     {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // <-- ADD useEffect
 import {
   Box,
   Container,
@@ -51,9 +51,31 @@ import {
   PictureAsPdf as PdfIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { getCurrentUser, logout } from '../services/authService'; // <-- Import authService functions
 
 function VerifierDashboard() {
   const navigate = useNavigate();
+  const [currentUser] = useState(getCurrentUser());
+
+  // NEW: Role enforcement logic
+  useEffect(() => {
+    if (!currentUser || currentUser.role.toUpperCase() !== 'VERIFIER') {
+      // Redirect unauthorized users
+      if (currentUser && currentUser.role.toUpperCase() === 'ISSUER') {
+        navigate('/issuer/dashboard');
+      } else if (currentUser && currentUser.role.toUpperCase() === 'USER') {
+        navigate('/user');
+      } else {
+        // Not logged in or unknown role, redirect to home/login page
+        navigate('/');
+      }
+    }
+  }, [currentUser, navigate]);
+
+  if (!currentUser || currentUser.role.toUpperCase() !== 'VERIFIER') {
+    // Prevent rendering the dashboard while redirecting
+    return <Box sx={{ p: 4 }}>Checking authorization...</Box>;
+  }
   const [currentTab, setCurrentTab] = useState(0);
   const [selectedVerification, setSelectedVerification] = useState(null);
   const [verificationDialogOpen, setVerificationDialogOpen] = useState(false);
