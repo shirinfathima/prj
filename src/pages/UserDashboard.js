@@ -155,11 +155,11 @@ function UserDashboard() {
               <ListItemText primary="Upload Document" />
             </ListItem>
             <Divider />
-            <ListItem button onClick={() => navigate('/documents')}>
+            <ListItem button onClick={() => navigate('/issued-documents')}>
               <ListItemIcon>
                 <DocumentIcon color="primary" />
               </ListItemIcon>
-              <ListItemText primary="View All Documents" />
+              <ListItemText primary="Issued Documents" />
             </ListItem>
           </List>
         </CardContent>

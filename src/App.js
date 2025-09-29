@@ -14,6 +14,7 @@ import FraudDetection from './pages/FraudDetection';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProfileDetails from './pages/ProfileDetails';
+import IssuedDocuments from './pages/IssuedDocuments'; // <-- NEW IMPORT
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/profile-details" element={<ProfileDetails />} /> 
         <Route path="/upload" element={<DocumentUpload />} />
         <Route path="/verification-result" element={<VerificationResult />} />
+        <Route path="/issued-documents" element={<IssuedDocuments />} /> {/* <-- NEW ROUTE */}
         
         {/* issuer Routes */}
         <Route path="/issuer" element={<IssuerDashboard />} />
