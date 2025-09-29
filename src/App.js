@@ -14,7 +14,8 @@ import FraudDetection from './pages/FraudDetection';
 import Contact from './pages/Contact';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProfileDetails from './pages/ProfileDetails';
-import IssuedDocuments from './pages/IssuedDocuments'; // <-- NEW IMPORT
+import IssuedDocuments from './pages/IssuedDocuments';
+import DocumentReview from './pages/DocumentReview'; 
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         {/* Verifier Routes */}
         <Route path="/verifier" element={<VerifierDashboard />} />
         <Route path="/verifier/dashboard" element={<VerifierDashboard />} />
+        <Route path="/verifier/document-review" element={<DocumentReview />} />
         
         {/* Security Routes */}
         <Route path="/fraud-detection" element={<FraudDetection />} />

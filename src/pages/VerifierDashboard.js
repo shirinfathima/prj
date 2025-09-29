@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // <-- ADD useEffect
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -34,7 +34,9 @@ import {
   IconButton,
   Tabs,
   Tab,
-  Badge
+  Badge,
+  // ADDED
+  LinearProgress 
 } from '@mui/material';
 import {
   VerifiedUser as VerifierIcon,
@@ -42,118 +44,39 @@ import {
   CheckCircle as ApproveIcon,
   Cancel as RejectIcon,
   Visibility as ViewIcon,
-  CloudUpload as UploadIcon,
-  Comment as CommentIcon,
   Schedule as PendingIcon,
   Done as DoneIcon,
   Person as PersonIcon,
-  Image as ImageIcon,
-  PictureAsPdf as PdfIcon
+  // NEW
+  Assessment as AssessmentIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUser, logout } from '../services/authService'; // <-- Import authService functions
+import { getCurrentUser, logout } from '../services/authService'; 
+import DashboardLayout from '../components/DashboardLayout';
 
 function VerifierDashboard() {
   const navigate = useNavigate();
   const [currentUser] = useState(getCurrentUser());
+  const [currentTab, setCurrentTab] = useState(1); 
 
-  // NEW: Role enforcement logic
+  // Role enforcement logic
   useEffect(() => {
     if (!currentUser || currentUser.role.toUpperCase() !== 'VERIFIER') {
-      // Redirect unauthorized users
       if (currentUser && currentUser.role.toUpperCase() === 'ISSUER') {
         navigate('/issuer/dashboard');
       } else if (currentUser && currentUser.role.toUpperCase() === 'USER') {
         navigate('/user');
       } else {
-        // Not logged in or unknown role, redirect to home/login page
         navigate('/');
       }
     }
   }, [currentUser, navigate]);
 
   if (!currentUser || currentUser.role.toUpperCase() !== 'VERIFIER') {
-    // Prevent rendering the dashboard while redirecting
     return <Box sx={{ p: 4 }}>Checking authorization...</Box>;
   }
-  const [currentTab, setCurrentTab] = useState(0);
-  const [selectedVerification, setSelectedVerification] = useState(null);
-  const [verificationDialogOpen, setVerificationDialogOpen] = useState(false);
-  const [decision, setDecision] = useState('');
-  const [remarks, setRemarks] = useState('');
 
-  // Mock data for assigned verifications
-  const [verifications, setVerifications] = useState([
-    {
-      id: 1,
-      userId: 101,
-      userName: 'John Smith',
-      userEmail: 'john.smith@email.com',
-      documentType: 'National ID',
-      fileName: 'national_id_scan.jpg',
-      submittedDate: '2024-09-14T10:30:00',
-      priority: 'High',
-      status: 'Assigned',
-      ocrConfidence: 94,
-      aiRecommendation: 'Approve',
-      aiConfidence: 92,
-      extractedData: {
-        fullName: 'John Michael Smith',
-        dateOfBirth: '1985-03-15',
-        idNumber: 'ID987654321',
-        issuedDate: '2020-01-15',
-        expiryDate: '2030-01-15',
-        address: '456 Oak Avenue, Springfield, IL 62701'
-      },
-      flags: []
-    },
-    {
-      id: 2,
-      userId: 102,
-      userName: 'Sarah Johnson',
-      userEmail: 'sarah.j@email.com',
-      documentType: 'Passport',
-      fileName: 'passport_scan.pdf',
-      submittedDate: '2024-09-14T09:15:00',
-      priority: 'Normal',
-      status: 'Assigned',
-      ocrConfidence: 97,
-      aiRecommendation: 'Approve',
-      aiConfidence: 96,
-      extractedData: {
-        fullName: 'Sarah Elizabeth Johnson',
-        dateOfBirth: '1992-08-22',
-        idNumber: 'P123456789',
-        issuedDate: '2019-06-10',
-        expiryDate: '2029-06-10'
-      },
-      flags: []
-    },
-    {
-      id: 3,
-      userId: 103,
-      userName: 'Mike Davis',
-      userEmail: 'mike.davis@email.com',
-      documentType: 'Driver License',
-      fileName: 'drivers_license.jpg',
-      submittedDate: '2024-09-14T08:45:00',
-      priority: 'Normal',
-      status: 'Assigned',
-      ocrConfidence: 78,
-      aiRecommendation: 'Review Required',
-      aiConfidence: 65,
-      extractedData: {
-        fullName: 'Michael Robert Davis',
-        dateOfBirth: '1988-11-05',
-        idNumber: 'DL555666777',
-        issuedDate: '2018-02-20',
-        expiryDate: '2026-02-20',
-        address: '789 Pine Street, Chicago, IL 60601'
-      },
-      flags: ['Low OCR Confidence', 'Date Format Inconsistency']
-    }
-  ]);
-
+  // Mock data (only completed needed for the main dashboard view)
   const [completedVerifications, setCompletedVerifications] = useState([
     {
       id: 4,
@@ -173,62 +96,30 @@ function VerifierDashboard() {
     }
   ]);
 
+  // Keep stats for display on dashboard
   const [verifierStats] = useState({
     assignedToday: 8,
     completedToday: 5,
-    pendingReview: 3,
+    pendingReview: 3, 
     approvalRate: 87.5,
     avgProcessingTime: '12 minutes'
   });
 
-  const handleVerificationClick = (verification) => {
-    setSelectedVerification(verification);
-    setVerificationDialogOpen(true);
-    setDecision('');
-    setRemarks('');
-  };
-
-  const handleSubmitDecision = () => {
-    if (!decision) {
-      alert('Please select a decision');
-      return;
-    }
-
-    // Update verification status
-    const updatedVerifications = verifications.map(v => 
-      v.id === selectedVerification.id 
-        ? { ...v, status: 'Completed', decision, remarks }
-        : v
-    );
-    
-    // Move to completed
-    const completedVerification = {
-      ...selectedVerification,
-      completedDate: new Date().toISOString(),
-      decision,
-      remarks
-    };
-    
-    setVerifications(updatedVerifications.filter(v => v.id !== selectedVerification.id));
-    setCompletedVerifications([completedVerification, ...completedVerifications]);
-    setVerificationDialogOpen(false);
-  };
-
-  const getPriorityColor = (priority) => {
-    switch (priority.toLowerCase()) {
-      case 'high': return 'error';
-      case 'normal': return 'primary';
-      case 'low': return 'default';
-      default: return 'default';
-    }
-  };
-
-  const getRecommendationColor = (recommendation) => {
-    switch (recommendation.toLowerCase()) {
-      case 'approve': return 'success';
-      case 'reject': return 'error';
-      case 'review required': return 'warning';
-      default: return 'default';
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case 'active':
+      case 'approved':
+      case 'done':
+        return 'success';
+      case 'pending':
+      case 'pending review':
+      case 'in progress':
+        return 'warning';
+      case 'suspended':
+      case 'rejected':
+        return 'error';
+      default:
+        return 'default';
     }
   };
 
@@ -252,8 +143,60 @@ function VerifierDashboard() {
     </Card>
   );
 
+  // Verifier Sidebar Definition (Profile Details)
+  const verifierSidebar = (
+    <Box>
+      <Card sx={{ mb: 3 }}>
+        <CardContent sx={{ textAlign: 'center' }}>
+          <Avatar
+            sx={{ width: 80, height: 80, mx: 'auto', mb: 2, bgcolor: 'primary.main' }}
+          >
+            <VerifierIcon sx={{ fontSize: 40 }} />
+          </Avatar>
+          <Typography variant="h6">{currentUser.name}</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {currentUser.email}
+          </Typography>
+          <Chip label={currentUser.role} color="primary" size="small" />
+          <Box sx={{ mt: 3 }}>
+            <Button
+              variant="outlined"
+              startIcon={<PersonIcon />}
+              onClick={() => navigate('/profile-details')}
+              fullWidth
+            >
+              My Profile
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent>
+          <Typography variant="h6" sx={{ mb: 2 }}>Statistics</Typography>
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <DoneIcon color="success" />
+              </ListItemIcon>
+              <ListItemText primary="Completed Today" secondary={verifierStats.completedToday} />
+            </ListItem>
+            <Divider />
+            <ListItem>
+              <ListItemIcon>
+                <PendingIcon color="warning" />
+              </ListItemIcon>
+              <ListItemText primary="Pending Queue" secondary={verifierStats.pendingReview} />
+            </ListItem>
+          </List>
+        </CardContent>
+      </Card>
+    </Box>
+  );
+
+
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <DashboardLayout sidebar={verifierSidebar}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -300,15 +243,15 @@ function VerifierDashboard() {
         </Grid>
       </Grid>
 
-      {/* Main Content */}
+      {/* Main Content Tabs */}
       <Card>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={currentTab} onChange={(e, newValue) => setCurrentTab(newValue)}>
             <Tab 
               label={
-                <Badge badgeContent={verifications.length} color="error">
-                  Assigned Verifications
-                </Badge>
+                  <Badge badgeContent={verifierStats.pendingReview} color="error">
+                    Review Queue
+                  </Badge>
               } 
             />
             <Tab label="Completed Verifications" />
@@ -316,125 +259,25 @@ function VerifierDashboard() {
           </Tabs>
         </Box>
 
-        {/* Assigned Verifications Tab */}
+        {/* Content for Assigned Verifications/Review Queue - Now a dedicated page link */}
         {currentTab === 0 && (
-          <CardContent>
-            {verifications.length === 0 ? (
-              <Alert severity="info">
-                No verifications assigned at the moment. Check back later for new assignments.
-              </Alert>
-            ) : (
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>User</TableCell>
-                      <TableCell>Document</TableCell>
-                      <TableCell>Submitted</TableCell>
-                      <TableCell>Priority</TableCell>
-                      <TableCell>AI Recommendation</TableCell>
-                      <TableCell>OCR Confidence</TableCell>
-                      <TableCell>Flags</TableCell>
-                      <TableCell>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {verifications.map((verification) => (
-                      <TableRow key={verification.id} hover>
-                        <TableCell>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Avatar>
-                              <PersonIcon />
-                            </Avatar>
-                            <Box>
-                              <Typography variant="subtitle2">
-                                {verification.userName}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                {verification.userEmail}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            {verification.fileName.endsWith('.pdf') ? 
-                              <PdfIcon color="error" /> : 
-                              <ImageIcon color="primary" />
-                            }
-                            <Box>
-                              <Typography variant="subtitle2">
-                                {verification.documentType}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                {verification.fileName}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          {new Date(verification.submittedDate).toLocaleString()}
-                        </TableCell>
-                        <TableCell>
-                          <Chip 
-                            label={verification.priority} 
-                            color={getPriorityColor(verification.priority)}
-                            size="small"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Box>
-                            <Chip 
-                              label={verification.aiRecommendation} 
-                              color={getRecommendationColor(verification.aiRecommendation)}
-                              size="small"
-                            />
-                            <Typography variant="body2" color="text.secondary">
-                              {verification.aiConfidence}% confidence
-                            </Typography>
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2">
-                            {verification.ocrConfidence}%
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          {verification.flags.length > 0 ? (
-                            <Box>
-                              {verification.flags.map((flag, index) => (
-                                <Chip 
-                                  key={index}
-                                  label={flag} 
-                                  color="warning" 
-                                  size="small" 
-                                  sx={{ mr: 0.5, mb: 0.5 }}
-                                />
-                              ))}
-                            </Box>
-                          ) : (
-                            <Typography variant="body2" color="success.main">
-                              No issues
-                            </Typography>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="contained"
-                            size="small"
-                            startIcon={<ViewIcon />}
-                            onClick={() => handleVerificationClick(verification)}
-                          >
-                            Review
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </CardContent>
+            <CardContent sx={{ textAlign: 'center', py: 8 }}>
+                <AssessmentIcon sx={{ fontSize: 80, color: 'error.main', mb: 2 }}/>
+                <Typography variant="h5" sx={{ mb: 1 }}>
+                    Pending Documents ({verifierStats.pendingReview})
+                </Typography>
+                <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                    Access the dedicated page to begin or continue document reviews.
+                </Typography>
+                <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => navigate('/verifier/document-review')}
+                    startIcon={<ViewIcon />}
+                >
+                    Document Review
+                </Button>
+            </CardContent>
         )}
 
         {/* Completed Verifications Tab */}
@@ -515,131 +358,7 @@ function VerifierDashboard() {
           </CardContent>
         )}
       </Card>
-
-      {/* Verification Review Dialog */}
-      <Dialog 
-        open={verificationDialogOpen} 
-        onClose={() => setVerificationDialogOpen(false)} 
-        maxWidth="lg" 
-        fullWidth
-      >
-        <DialogTitle>
-          Document Verification Review
-        </DialogTitle>
-        <DialogContent>
-          {selectedVerification && (
-            <Grid container spacing={3}>
-              {/* User Information */}
-              <Grid item xs={12} md={6}>
-                <Card variant="outlined">
-                  <CardContent>
-                    <Typography variant="h6" sx={{ mb: 2 }}>User Information</Typography>
-                    <Typography><strong>Name:</strong> {selectedVerification.userName}</Typography>
-                    <Typography><strong>Email:</strong> {selectedVerification.userEmail}</Typography>
-                    <Typography><strong>Document Type:</strong> {selectedVerification.documentType}</Typography>
-                    <Typography><strong>File:</strong> {selectedVerification.fileName}</Typography>
-                    <Typography><strong>Submitted:</strong> {new Date(selectedVerification.submittedDate).toLocaleString()}</Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-
-              {/* AI Analysis */}
-              <Grid item xs={12} md={6}>
-                <Card variant="outlined">
-                  <CardContent>
-                    <Typography variant="h6" sx={{ mb: 2 }}>AI Analysis</Typography>
-                    <Typography><strong>OCR Confidence:</strong> {selectedVerification.ocrConfidence}%</Typography>
-                    <Typography><strong>AI Recommendation:</strong> {selectedVerification.aiRecommendation}</Typography>
-                    <Typography><strong>AI Confidence:</strong> {selectedVerification.aiConfidence}%</Typography>
-                    {selectedVerification.flags.length > 0 && (
-                      <Box sx={{ mt: 2 }}>
-                        <Typography variant="subtitle2">Flags:</Typography>
-                        {selectedVerification.flags.map((flag, index) => (
-                          <Chip key={index} label={flag} color="warning" size="small" sx={{ mr: 0.5, mt: 0.5 }} />
-                        ))}
-                      </Box>
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
-
-              {/* Extracted Data */}
-              <Grid item xs={12}>
-                <Card variant="outlined">
-                  <CardContent>
-                    <Typography variant="h6" sx={{ mb: 2 }}>Extracted Data</Typography>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
-                        <Typography><strong>Full Name:</strong> {selectedVerification.extractedData.fullName}</Typography>
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <Typography><strong>Date of Birth:</strong> {selectedVerification.extractedData.dateOfBirth}</Typography>
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <Typography><strong>ID Number:</strong> {selectedVerification.extractedData.idNumber}</Typography>
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <Typography><strong>Issued Date:</strong> {selectedVerification.extractedData.issuedDate}</Typography>
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <Typography><strong>Expiry Date:</strong> {selectedVerification.extractedData.expiryDate}</Typography>
-                      </Grid>
-                      {selectedVerification.extractedData.address && (
-                        <Grid item xs={12}>
-                          <Typography><strong>Address:</strong> {selectedVerification.extractedData.address}</Typography>
-                        </Grid>
-                      )}
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </Grid>
-
-              {/* Decision Form */}
-              <Grid item xs={12}>
-                <Card variant="outlined">
-                  <CardContent>
-                    <Typography variant="h6" sx={{ mb: 2 }}>Verification Decision</Typography>
-                    <Grid container spacing={3}>
-                      <Grid item xs={12} md={6}>
-                        <FormControl fullWidth>
-                          <InputLabel>Decision</InputLabel>
-                          <Select
-                            value={decision}
-                            onChange={(e) => setDecision(e.target.value)}
-                            label="Decision"
-                          >
-                            <MenuItem value="Approved">Approve</MenuItem>
-                            <MenuItem value="Rejected">Reject</MenuItem>
-                            <MenuItem value="Pending">Needs More Information</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <TextField
-                          fullWidth
-                          multiline
-                          rows={4}
-                          label="Remarks"
-                          value={remarks}
-                          onChange={(e) => setRemarks(e.target.value)}
-                          placeholder="Add any comments or reasons for your decision..."
-                        />
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setVerificationDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmitDecision}>
-            Submit Decision
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Container>
+    </DashboardLayout>
   );
 }
 
