@@ -256,9 +256,9 @@ function IssuerDashboard() {
           >
             <IssuerIcon sx={{ fontSize: 40 }} />
           </Avatar>
-          <Typography variant="h6">Issuer</Typography>
+          <Typography variant="h6">{currentUser.name}</Typography> 
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            issuer@trustnet.com
+            {currentUser.email}
           </Typography>
         </CardContent>
       </Card>
