@@ -29,6 +29,7 @@ import {
   DialogActions,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   Divider,
   Alert,
@@ -48,6 +49,7 @@ import {
   Block as BlockIcon,
   CheckCircle as ApproveIcon,
   Cancel as RejectIcon,
+  ExitToApp as LogoutIcon // ADDED Logout Icon
 } from '@mui/icons-material';
 import DashboardLayout from '../components/DashboardLayout';
 import { getCurrentUser, logout } from '../services/authService'; // <-- Import authService functions
@@ -262,7 +264,26 @@ function IssuerDashboard() {
           </Typography>
         </CardContent>
       </Card>
-
+      {/* NEW: Standalone Logout Card */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent sx={{ textAlign: 'center' }}>
+            <List sx={{ width: '100%' }}>
+                <ListItem 
+                    button 
+                    onClick={() => { 
+                        logout(); 
+                        navigate('/'); 
+                    }}
+                >
+                    <ListItemIcon>
+                        <LogoutIcon color="error" />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                </ListItem>
+            </List>
+        </CardContent>
+      </Card>
+      {/* END NEW: Standalone Logout Card */}
       <Card>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2 }}>System Overview</Typography>

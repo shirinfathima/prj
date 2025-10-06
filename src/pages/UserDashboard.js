@@ -24,7 +24,8 @@ import {
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
   Schedule as PendingIcon,
-  Edit as EditIcon
+  Edit as EditIcon,
+  ExitToApp as LogoutIcon // ADDED Logout Icon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout'; 
@@ -143,7 +144,26 @@ function UserDashboard() {
           </Box>
         </CardContent>
       </Card>
-
+      {/* NEW: Standalone Logout Card */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent sx={{ textAlign: 'center' }}>
+            <List sx={{ width: '100%' }}>
+                <ListItem 
+                    button 
+                    onClick={() => { 
+                        logout(); 
+                        navigate('/'); 
+                    }}
+                >
+                    <ListItemIcon>
+                        <LogoutIcon color="error" />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                </ListItem>
+            </List>
+        </CardContent>
+      </Card>
+      {/* END NEW: Standalone Logout Card */}
       <Card>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2 }}>Quick Actions</Typography>
@@ -160,7 +180,7 @@ function UserDashboard() {
                 <DocumentIcon color="primary" />
               </ListItemIcon>
               <ListItemText primary="Issued Documents" />
-            </ListItem>
+            </ListItem>          
           </List>
         </CardContent>
       </Card>

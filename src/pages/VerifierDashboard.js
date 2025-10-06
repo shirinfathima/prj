@@ -35,8 +35,7 @@ import {
   Tabs,
   Tab,
   Badge,
-  // ADDED
-  LinearProgress 
+  LinearProgress
 } from '@mui/material';
 import {
   VerifiedUser as VerifierIcon,
@@ -47,8 +46,8 @@ import {
   Schedule as PendingIcon,
   Done as DoneIcon,
   Person as PersonIcon,
-  // NEW
-  Assessment as AssessmentIcon
+  Assessment as AssessmentIcon,
+  ExitToApp as LogoutIcon // ADDED ExitToAppIcon for logout
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { getCurrentUser, logout } from '../services/authService'; 
@@ -170,6 +169,27 @@ function VerifierDashboard() {
           </Box>
         </CardContent>
       </Card>
+      {/* NEW: Standalone Logout Card */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent sx={{ textAlign: 'center' }}>
+            <List sx={{ width: '100%' }}>
+                <ListItem 
+                    button 
+                    sx={{ py: 0 }} 
+                    onClick={() => { 
+                        logout(); 
+                        navigate('/'); 
+                    }}
+                >
+                    <ListItemIcon>
+                        <LogoutIcon color="error" />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                </ListItem>
+            </List>
+        </CardContent>
+      </Card>
+      {/* END NEW: Standalone Logout Card */}
 
       <Card>
         <CardContent>
@@ -193,6 +213,7 @@ function VerifierDashboard() {
       </Card>
     </Box>
   );
+
 
 
   return (
